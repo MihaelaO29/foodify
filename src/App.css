@@ -1,5 +1,4 @@
 .background {
-  height: 100vh;
   width: 100vw;
   background: linear-gradient(90deg, rgba(252, 0, 39, 0.6755952380952381) 0%, rgba(253, 126, 29, 0.8772759103641457) 50%, rgba(255, 149, 10, 0.7176120448179272) 100%);
   display: flex;
@@ -8,8 +7,8 @@
 }
 
 .application {
-  height: 90%;
-  width: 85%;
+  height: 1300px;
+  margin: 40px 0px;
   background-color: #eeeae4;
   border-radius: 10px;
 }
@@ -22,11 +21,12 @@
 }
 
 .logo {
-  height: 120px;
+  height: 130px;
   width: auto;
+  cursor: pointer;
 }
 
-.search {
+.search_section {
   height: 45px;
   width: 450px;
   border-radius: 70px;
@@ -40,16 +40,22 @@
 
 .search_btn {
   height: 45px;
-  width: 320px;
+  width: 200px;
   border-radius: 70px;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
   border: 0;
   background: #ffbc41;
-  transition: 1s ease;
+  border: none;
 }
 
+.search_btn:hover {
+  cursor: pointer;
+  -webkit-box-shadow: 0px 5px 40px -10px rgba(0, 0, 0, 0.57);
+  -moz-box-shadow: 0px 5px 40px -10px rgba(0, 0, 0, 0.57);
+  color: #ffee10;
+}
 
 .search_input {
   height: 30px;
@@ -62,17 +68,42 @@
   background-color: white;
 }
 
-.bookmark {
+.bookmark_section {
+  width: 130px;
   font-size: 12px;
   font-weight: 600;
   display: flex;
   align-items: center;
+  justify-content: center;
+}
+
+.bookmark_section :hover {
+  cursor: pointer;
+  color:  #ffbc41;
+  border: 0;
+}
+
+.bookmark {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.bookmark_img{
+height: 30px;
+}
+
+.bookmark_btn {
+  border: solid 1px;
+  background-color: transparent;
+  height: 30px;
 }
 
 .content {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  margin: 19px 0px;
 }
 
 .instructions {
@@ -80,9 +111,8 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  font-size: 23px;
-  font-weight: 900;
-  height: 450px;
+  font-size: 30px;
+  font-weight: 700;
   background-color: white;
 }
 
@@ -90,8 +120,8 @@
   width: 800px;
   display: grid;
   justify-content: center;
-  grid-template-columns: 300px 300px;
-  gap: 10px;
+  grid-template-columns: 335px 295px;
+  grid-template-rows: 250px 235px;
 }
 
 .food_image {
@@ -121,12 +151,12 @@
   transition: 1s ease;
 }
 
-.item_list:hover{
-    cursor: pointer;
-    box-shadow: inset 0 0 0.55em 0em red;
-    border-color: red;
-    color: red;
-  }
+.item_list:hover {
+  cursor: pointer;
+  box-shadow: inset 0 0 0.55em 0em red;
+  border-color: red;
+  color: red;
+}
 
 .recipe_details {
   display: flex;
@@ -135,14 +165,13 @@
 }
 
 .recipe_item_list {
-  height: 450px;
   overflow: scroll;
   scrollbar-width: none;
   background-color: white;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  
+
 }
 
 .recipe_title {
@@ -161,7 +190,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 0px 10px 20px 15px;
+  margin: 20px;
 }
 
 .change_btn {
@@ -173,28 +202,25 @@
   transition: 1s ease;
 }
 
-.off_btn{
+.off_btn {
   background-color: white;
   border: 0;
 }
 
 .change_btn:hover {
- background-color: aqua;
- cursor: pointer;
- -webkit-transform: scale(1.2);
- -ms-transform: scale(1.2);
- transform: scale(1.2);
- transition: 0.5s ease;
- background-color: #dd4c4cd9;
- color: white;
+  background-color: aqua;
+  cursor: pointer;
+  -webkit-transform: scale(1.2);
+  -ms-transform: scale(1.2);
+  transform: scale(1.2);
+  transition: 0.5s ease;
+  background-color: #dd4c4cd9;
+  color: white;
 }
 
-.recipe_product_image{
+.recipe_product_image {
   width: 113px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-
-
-

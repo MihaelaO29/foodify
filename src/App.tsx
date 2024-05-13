@@ -13,7 +13,7 @@ import _, { lastIndexOf } from 'lodash';
 function App() {
   const API = 'https://forkify-api.herokuapp.com/api/v2/recipes/';
   const KEY = '3292433c-46b7-40be-bc23-e568af71e2ab';
-  const itemsPerPage = 4;
+  const itemsPerPage = 10;
   const [search, setSearch] = useState('');
   const [allRecipes, setAllRecipes] = useState<any[]>([]);
   const [page, setPage] = useState<number>(1);
@@ -54,15 +54,19 @@ function App() {
         <div className='application'>
           <div className='nav'>
             <img onClick={handleClickLogo} className='logo' src={logo} alt='logo' />
-            <div className='search'>
+            <div className='search_section'>
               <input value={search} onChange={handleSearchContent} className='search_input' placeholder='Search recipes' />
+              <div className='search'>
                 <button className='search_btn' onClick={fetchRecipes}>
                   <img src={magnifier} alt='magnifier' /> Search</button>
-          
+                  </div>
+
             </div>
+            <div className='bookmark_section'>
             <div className='bookmark'>
-              <img src={bookmark} alt='bookmark' />
-              BOOKMARKS
+              <img className='bookmark_img' src={bookmark} alt='bookmark' />
+              <button className='bookmark_btn'> BOOKMARKS </button>
+            </div>
             </div>
 
           </div>
@@ -104,6 +108,7 @@ function App() {
                 </div>
               )}
             </div>
+            
             <div className='image_section'>
               <img className='food_image' src={food_img1} alt='food_image' />
               <img className='food_image' src={food_img2} alt='food_image' />

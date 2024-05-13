@@ -8,13 +8,16 @@ import food_img2 from './img/food2.jpg';
 import food_img3 from './img/food3.jpg';
 import food_img4 from './img/food4.jpg';
 import axios from 'axios';
-import _ from 'lodash';
+import _, { lastIndexOf } from 'lodash';
 
 function App() {
   const API = 'https://forkify-api.herokuapp.com/api/v2/recipes/';
   const KEY = '3292433c-46b7-40be-bc23-e568af71e2ab';
+  const itemsPerPage = 4;
   const [search, setSearch] = useState('');
   const [allRecipes, setAllRecipes] = useState<any[]>([]);
+  const [page, setPage] = useState<number>(1);
+
 
   const handleSearchContent = (event: { target: { value: SetStateAction<string>; }; }) => {
     setSearch(event?.target?.value)
@@ -26,21 +29,36 @@ function App() {
       .then(respone => respone.data)
       .then(respone => respone.data)
       .then(respone => respone.recipes)
+    setSearch('')
     if (!_.isEmpty(recipes)) {
       setAllRecipes(recipes);
     }
   }
+
+  const handleBackPage = () => {
+    setPage(page - 1)
+  }
+
+  const handleNextPage = () => {
+    setPage(page + 1)
+  }
+
+  const handleClickLogo = () => {
+    setAllRecipes([])
+  }
+
 
   return (
     <div>
       <div className='background'>
         <div className='application'>
           <div className='nav'>
-            <img className='logo' src={logo} alt='logo' />
+            <img onClick={handleClickLogo} className='logo' src={logo} alt='logo' />
             <div className='search'>
-              <input onChange={handleSearchContent} className='search_input' placeholder='Search recipes' />
-
-              <button className='search_btn' onClick={fetchRecipes}> <img src={magnifier} alt='magnifier' /> Search</button>
+              <input value={search} onChange={handleSearchContent} className='search_input' placeholder='Search recipes' />
+                <button className='search_btn' onClick={fetchRecipes}>
+                  <img src={magnifier} alt='magnifier' /> Search</button>
+          
             </div>
             <div className='bookmark'>
               <img src={bookmark} alt='bookmark' />
@@ -58,7 +76,7 @@ function App() {
               ) : (
                 <div className='recipe_item_list'>
                   <div className='list'>
-                    {allRecipes.map((recipe) =>
+                    {allRecipes.slice((page - 1) * itemsPerPage, page * itemsPerPage).map((recipe: any) =>
                       <div className='item_list' key={recipe.id}>
                         <div className='recipe_product_image'>
                           <img className='product_image' src={recipe.image_url} alt="Content" />
@@ -68,7 +86,19 @@ function App() {
                           <p className='recipe_difficulty'>{recipe.publisher.toUpperCase()} </p>
                         </div>
                       </div>
-                    )
+                    )}
+
+                  </div>
+                  <div className='change_page_btn'>
+                    {page > 1 ?
+                      <button onClick={handleBackPage} className='change_btn'>Previous</button>
+                      :
+                      <button className='off_btn'></button>
+                    }
+                    {(page * itemsPerPage) <= allRecipes.length ?
+                      (<button onClick={handleNextPage} className='change_btn'>Next</button>)
+                      :
+                      (<button className='off_btn'></button>)
                     }
                   </div>
                 </div>

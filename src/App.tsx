@@ -1,5 +1,5 @@
 import './App.css';
-import { SetStateAction, useState } from 'react';
+import { SetStateAction, useState, useEffect } from 'react';
 import logo from './img/logo.png';
 import bookmark from './img/bookmark.png';
 import magnifier from './img/search.png';
@@ -21,10 +21,16 @@ function App() {
   const KEY = '3292433c-46b7-40be-bc23-e568af71e2ab';
 
   const itemsPerPage = 10;
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState('pizza');
   const [allRecipes, setAllRecipes] = useState<any[]>([]);
   const [page, setPage] = useState<number>(1);
   const [recipesDetails, setReipesDetails] = useState<any>({});
+  const [showBookmarks, setShowBookmarks] = useState(false);
+  const [savedBookmarks, setSavedBookmrks] = useState<any[]>([])
+
+  // useEffect(() => {
+  //   localStorage.setItem('mark', JSON.stringify(allRecipes));
+  // }, []);
 
   const handleSearchContent = (event: { target: { value: SetStateAction<string>; }; }) => {
     setSearch(event?.target?.value)
@@ -42,7 +48,7 @@ function App() {
     }
   }
 
-  const fetchRecipesDetails = async (id: string ) => {
+  const fetchRecipesDetails = async (id: string) => {
     if (id) {
       const recipe = await axios
         .get(`${API}${id}?key=${KEY}`)
@@ -65,6 +71,18 @@ function App() {
     setAllRecipes([])
   }
 
+  const handleMouseOver = () => {
+    setShowBookmarks(true);
+  }
+
+  const handleMouseOut = () => {
+    setShowBookmarks(false);
+  }
+
+  const handleSaveBookmarks = (id: any) => {
+    const recipeBooked = allRecipes.filter(recipe => recipe.id === id);
+    setSavedBookmrks([...savedBookmarks, ...recipeBooked])
+  }
 
   return (
     <div>
@@ -80,14 +98,44 @@ function App() {
               </div>
 
             </div>
-            <div className='bookmark_section'>
-              <div className='bookmark'>
+            <div className='bookmark_section' >
+              <div
+                className='bookmark'
+                onMouseOver={handleMouseOver}
+                onMouseOut={handleMouseOut}
+              >
                 <img className='bookmark_img' src={bookmark} alt='bookmark' />
                 <button className='bookmark_btn'> BOOKMARKS </button>
               </div>
-            </div>
 
+              {showBookmarks ?
+                <div
+                  className='all_saved_bookmarks'
+                  onMouseOver={handleMouseOver}
+                  onMouseOut={handleMouseOut}
+                >
+                  {_.isEmpty(savedBookmarks) ?
+
+                    <div className='empty_bookmarks_message'>No bookmarks yet. Find a nice recipe and bookmark it. </div>
+                    :
+                    <div className='recipe_item_list'>
+                      <div className='list'>{savedBookmarks.map((recipe: any) =>
+                        <div className='item_list' >
+                          <div className='recipe_product_image'>
+                            <img className='product_image' src={recipe.image_url} alt="Content" />
+                          </div>
+                          <div className='recipe_details'>
+                            <div className='recipe_title'>{recipe.title}</div>
+                            <p className='recipe_difficulty'>{recipe.publisher} </p>
+                          </div>
+                        </div>)}
+                      </div>
+                    </div>}
+                </div>
+                : ''}
+            </div>
           </div>
+
           <div className='content'>
             <div className='recipes_list'>
               {_.isEmpty(allRecipes) ? (
@@ -99,7 +147,7 @@ function App() {
                 <div className='recipe_item_list'>
                   <div className='list'>
                     {allRecipes.slice((page - 1) * itemsPerPage, page * itemsPerPage).map((recipe: any) =>
-                      <div onClick={()=>fetchRecipesDetails(recipe.id)} className='item_list' key={recipe.id}>
+                      <div onClick={() => fetchRecipesDetails(recipe.id)} className='item_list' key={recipe.id}>
                         <div className='recipe_product_image'>
                           <img className='product_image' src={recipe.image_url} alt="Content" />
                         </div>
@@ -149,7 +197,7 @@ function App() {
                     <img src={plus} alt='plus_image' />
                   </div>
                   <div className='instructions_mark'>
-                    <img className='mark' src={mark} alt='instructions_mark' />
+                    <img onClick={() => handleSaveBookmarks(recipesDetails.id)} className='mark' src={mark} alt='instructions_mark' />
                   </div>
                 </div>
                 <div className='recipe_ingredients_list'>
@@ -157,7 +205,7 @@ function App() {
                   <div className='ingredinet_row'>
                     {recipesDetails?.ingredients?.map((ingredient: any, index: number) => (
                       <div className='all_ingredients' key={index}>
-                        <img className='check' src={check} alt="Check icon" /> 
+                        <img className='check' src={check} alt="Check icon" />
                         <span className='ingredient'>
                           {(ingredient.quantity || '') + ' ' + ingredient.unit + ' ' + ingredient.description}
                         </span>

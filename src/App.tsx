@@ -12,6 +12,7 @@ import user from './img/user.png';
 import plus from './img/plus.png';
 import minus from './img/minus.png';
 import mark from './img/mark.png';
+import markSaved from './img/mark_saved.png';
 import check from './img/check.png'
 import axios from 'axios';
 import _, { lastIndexOf } from 'lodash';
@@ -26,7 +27,7 @@ function App() {
   const [page, setPage] = useState<number>(1);
   const [recipesDetails, setReipesDetails] = useState<any>({});
   const [showBookmarks, setShowBookmarks] = useState(false);
-  const [savedBookmarks, setSavedBookmrks] = useState<any[]>([])
+  const [savedBookmarks, setSavedBookmrks] = useState<any[]>([]);
 
   // useEffect(() => {
   //   localStorage.setItem('mark', JSON.stringify(allRecipes));
@@ -80,8 +81,8 @@ function App() {
   }
 
   const handleSaveBookmarks = (id: any) => {
-    const recipeBooked = allRecipes.filter(recipe => recipe.id === id);
-    setSavedBookmrks([...savedBookmarks, ...recipeBooked])
+    const recipeBooked = allRecipes.filter(recipe => recipe.id === id)
+    setSavedBookmrks([...savedBookmarks, ...recipeBooked]);
   }
 
   return (
@@ -115,7 +116,6 @@ function App() {
                   onMouseOut={handleMouseOut}
                 >
                   {_.isEmpty(savedBookmarks) ?
-
                     <div className='empty_bookmarks_message'>No bookmarks yet. Find a nice recipe and bookmark it. </div>
                     :
                     <div className='recipe_item_list'>
@@ -196,13 +196,17 @@ function App() {
                     <img src={minus} alt='minus_image' />
                     <img src={plus} alt='plus_image' />
                   </div>
-                  <div className='instructions_mark'>
-                    <img onClick={() => handleSaveBookmarks(recipesDetails.id)} className='mark' src={mark} alt='instructions_mark' />
+                  <div onClick={() => handleSaveBookmarks(recipesDetails.id)} className='instructions_mark'>
+                    <img
+                      className='mark'
+                      src={_.isEmpty(savedBookmarks.filter(bk => bk.id === recipesDetails.id)) ? mark : markSaved}
+                      alt='instructions_mark'
+                    />
                   </div>
                 </div>
                 <div className='recipe_ingredients_list'>
                   <p className='ingredients_title'>RECIPE INGREDIENTS</p>
-                  <div className='ingredinet_row'>
+                  <div className='ingredient_row'>
                     {recipesDetails?.ingredients?.map((ingredient: any, index: number) => (
                       <div className='all_ingredients' key={index}>
                         <img className='check' src={check} alt="Check icon" />

@@ -9,8 +9,6 @@ import food_img3 from './img/food3.jpg';
 import food_img4 from './img/food4.jpg';
 import time from './img/time.png';
 import user from './img/user.png';
-import plus from './img/plus.png';
-import minus from './img/minus.png';
 import mark from './img/mark.png';
 import markSaved from './img/mark_saved.png';
 import check from './img/check.png'
@@ -22,16 +20,12 @@ function App() {
   const KEY = '3292433c-46b7-40be-bc23-e568af71e2ab';
 
   const itemsPerPage = 10;
-  const [search, setSearch] = useState('pizza');
+  const [search, setSearch] = useState('');
   const [allRecipes, setAllRecipes] = useState<any[]>([]);
   const [page, setPage] = useState<number>(1);
-  const [recipesDetails, setReipesDetails] = useState<any>({});
+  const [recipesDetails, setRecipesDetails] = useState<any>({});
   const [showBookmarks, setShowBookmarks] = useState(false);
-  const [savedBookmarks, setSavedBookmrks] = useState<any[]>([]);
-
-  // useEffect(() => {
-  //   localStorage.setItem('mark', JSON.stringify(allRecipes));
-  // }, []);
+  const [savedBookmarks, setSavedBookmaks] = useState<any[]>([]);
 
   const handleSearchContent = (event: { target: { value: SetStateAction<string>; }; }) => {
     setSearch(event?.target?.value)
@@ -56,7 +50,7 @@ function App() {
         .then(respone => respone.data)
         .then(respone => respone.data)
         .then(respone => respone.recipe)
-      setReipesDetails(recipe)
+      setRecipesDetails(recipe)
     }
   }
 
@@ -68,9 +62,6 @@ function App() {
     setPage(page + 1)
   }
 
-  const handleClickLogo = () => {
-    setAllRecipes([])
-  }
 
   const handleMouseOver = () => {
     setShowBookmarks(true);
@@ -81,8 +72,15 @@ function App() {
   }
 
   const handleSaveBookmarks = (id: any) => {
-    const recipeBooked = allRecipes.filter(recipe => recipe.id === id)
-    setSavedBookmrks([...savedBookmarks, ...recipeBooked]);
+    const recipeBooked = allRecipes.filter(recipe => recipe.id === id)[0]
+    const check = savedBookmarks.filter(recipe => recipe.id === recipeBooked.id)
+    if (!_.isEmpty(check)) {
+      const newArr = [...savedBookmarks];
+      const checkNewArr = newArr.filter(recipe => recipe.id !== recipeBooked.id)
+      setSavedBookmaks(checkNewArr)
+    } else {
+      setSavedBookmaks([...savedBookmarks, recipeBooked])
+    }
   }
 
   return (
@@ -90,7 +88,7 @@ function App() {
       <div className='background'>
         <div className='application'>
           <div className='nav'>
-            <img onClick={handleClickLogo} className='logo' src={logo} alt='logo' />
+            <img className='logo' src={logo} alt='logo' />
             <div className='search_section'>
               <input value={search} onChange={handleSearchContent} className='search_input' placeholder='Search recipes' />
               <div className='search'>
@@ -114,13 +112,13 @@ function App() {
                   className='all_saved_bookmarks'
                   onMouseOver={handleMouseOver}
                   onMouseOut={handleMouseOut}
-                >
+                > 
                   {_.isEmpty(savedBookmarks) ?
                     <div className='empty_bookmarks_message'>No bookmarks yet. Find a nice recipe and bookmark it. </div>
                     :
                     <div className='recipe_item_list'>
                       <div className='list'>{savedBookmarks.map((recipe: any) =>
-                        <div className='item_list' >
+                        <div onClick={() => fetchRecipesDetails(recipe.id)}className='item_list' >
                           <div className='recipe_product_image'>
                             <img className='product_image' src={recipe.image_url} alt="Content" />
                           </div>
@@ -193,8 +191,6 @@ function App() {
                   <div className='recipe_servings'>
                     <img src={user} alt='user_image' />
                     {recipesDetails.servings} SERVINGS
-                    <img src={minus} alt='minus_image' />
-                    <img src={plus} alt='plus_image' />
                   </div>
                   <div onClick={() => handleSaveBookmarks(recipesDetails.id)} className='instructions_mark'>
                     <img

@@ -20,12 +20,22 @@ function App() {
   const KEY = '3292433c-46b7-40be-bc23-e568af71e2ab';
 
   const itemsPerPage = 10;
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState('pizza');
   const [allRecipes, setAllRecipes] = useState<any[]>([]);
   const [page, setPage] = useState<number>(1);
   const [recipesDetails, setRecipesDetails] = useState<any>({});
   const [showBookmarks, setShowBookmarks] = useState(false);
   const [savedBookmarks, setSavedBookmaks] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!_.isEmpty(savedBookmarks)) {
+      localStorage.setItem('mark', JSON.stringify(savedBookmarks));
+    }
+  }, [savedBookmarks]);
+
+  useEffect(() => {
+    setSavedBookmaks(JSON.parse(localStorage.getItem('mark') + ''))
+  }, []);
 
   const handleSearchContent = (event: { target: { value: SetStateAction<string>; }; }) => {
     setSearch(event?.target?.value)
@@ -72,14 +82,16 @@ function App() {
   }
 
   const handleSaveBookmarks = (id: any) => {
-    const recipeBooked = allRecipes.filter(recipe => recipe.id === id)[0]
-    const check = savedBookmarks.filter(recipe => recipe.id === recipeBooked.id)
+    const check = savedBookmarks.filter(recipe => recipe.id === id)
     if (!_.isEmpty(check)) {
       const newArr = [...savedBookmarks];
-      const checkNewArr = newArr.filter(recipe => recipe.id !== recipeBooked.id)
+      const checkNewArr = newArr.filter(recipe => recipe.id !== id)
+      if (_.isEmpty(checkNewArr)) {
+        localStorage.setItem('mark', JSON.stringify([]));
+      }
       setSavedBookmaks(checkNewArr)
     } else {
-      setSavedBookmaks([...savedBookmarks, recipeBooked])
+      setSavedBookmaks([...savedBookmarks, recipesDetails])
     }
   }
 
@@ -112,13 +124,13 @@ function App() {
                   className='all_saved_bookmarks'
                   onMouseOver={handleMouseOver}
                   onMouseOut={handleMouseOut}
-                > 
+                >
                   {_.isEmpty(savedBookmarks) ?
                     <div className='empty_bookmarks_message'>No bookmarks yet. Find a nice recipe and bookmark it. </div>
                     :
                     <div className='recipe_item_list'>
                       <div className='list'>{savedBookmarks.map((recipe: any) =>
-                        <div onClick={() => fetchRecipesDetails(recipe.id)}className='item_list' >
+                        <div onClick={() => fetchRecipesDetails(recipe.id)} className='item_list' >
                           <div className='recipe_product_image'>
                             <img className='product_image' src={recipe.image_url} alt="Content" />
                           </div>

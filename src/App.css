@@ -110,12 +110,13 @@
 
 .content {
   display: flex;
+  height: calc(100% - 130px - 150px);
 }
 
 .search_instructions {
   height: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
   flex-direction: column;
   font-size: 30px;
@@ -143,6 +144,7 @@
 }
 
 .recipes_list {
+  height: 100%;
   display: flex;
   flex-direction: column;
   font-size: 16px;
@@ -172,6 +174,7 @@
 }
 
 .recipe_item_list {
+  height: 100%;
   overflow: scroll;
   scrollbar-width: none;
   background-color: white;

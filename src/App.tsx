@@ -20,7 +20,7 @@ function App() {
   const KEY = '3292433c-46b7-40be-bc23-e568af71e2ab';
 
   const itemsPerPage = 10;
-  const [search, setSearch] = useState('pizza');
+  const [search, setSearch] = useState('');
   const [allRecipes, setAllRecipes] = useState<any[]>([]);
   const [page, setPage] = useState<number>(1);
   const [recipesDetails, setRecipesDetails] = useState<any>({});

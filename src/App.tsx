@@ -13,7 +13,7 @@ import mark from './img/mark.png';
 import markSaved from './img/mark_saved.png';
 import check from './img/check.png'
 import axios from 'axios';
-import _, { lastIndexOf } from 'lodash';
+import _ from 'lodash';
 
 function App() {
   const API = 'https://forkify-api.herokuapp.com/api/v2/recipes/';

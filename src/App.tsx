@@ -95,12 +95,20 @@ function App() {
     }
   }
 
+  const handleLogoClick = () => {
+    setAllRecipes([]);
+    setRecipesDetails({});
+    setPage(1);
+    setSearch('');
+  };
+
+
   return (
     <div>
       <div className='background'>
         <div className='application'>
           <div className='nav'>
-            <img className='logo' src={logo} alt='logo' />
+            <img className='logo' src={logo} alt='logo' onClick={handleLogoClick} />
             <div className='search_section'>
               <input value={search} onChange={handleSearchContent} className='search_input' placeholder='Search recipes' />
               <div className='search'>

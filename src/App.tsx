@@ -15,6 +15,7 @@ import check from './img/check.png'
 import axios from 'axios';
 import _ from 'lodash';
 
+
 function App() {
   const API = 'https://forkify-api.herokuapp.com/api/v2/recipes/';
   const KEY = '3292433c-46b7-40be-bc23-e568af71e2ab';
@@ -25,7 +26,12 @@ function App() {
   const [page, setPage] = useState<number>(1);
   const [recipesDetails, setRecipesDetails] = useState<any>({});
   const [showBookmarks, setShowBookmarks] = useState(false);
-  const [savedBookmarks, setSavedBookmaks] = useState<any[]>([]);
+  const [savedBookmarks, setSavedBookmarks] = useState<any[]>([]);
+
+  useEffect(() => {
+    const storedBookmarks = JSON.parse(localStorage.getItem('mark') || '[]');
+    setSavedBookmarks(storedBookmarks);
+  }, []);
 
   useEffect(() => {
     if (!_.isEmpty(savedBookmarks)) {
@@ -33,67 +39,61 @@ function App() {
     }
   }, [savedBookmarks]);
 
-  useEffect(() => {
-    setSavedBookmaks(JSON.parse(localStorage.getItem('mark') + ''))
-  }, []);
-
   const handleSearchContent = (event: { target: { value: SetStateAction<string>; }; }) => {
-    setSearch(event?.target?.value)
-  }
+    setSearch(event?.target?.value);
+  };
 
   const fetchRecipes = async () => {
     const recipes = await axios
       .get(`${API}?key=${KEY}&search=${search}`)
-      .then(respone => respone.data)
-      .then(respone => respone.data)
-      .then(respone => respone.recipes)
-    setSearch('')
+      .then(response => response.data)
+      .then(response => response.data)
+      .then(response => response.recipes);
+    setSearch('');
     if (!_.isEmpty(recipes)) {
       setAllRecipes(recipes);
     }
-  }
+  };
 
   const fetchRecipesDetails = async (id: string) => {
     if (id) {
       const recipe = await axios
         .get(`${API}${id}?key=${KEY}`)
-        .then(respone => respone.data)
-        .then(respone => respone.data)
-        .then(respone => respone.recipe)
-      setRecipesDetails(recipe)
+        .then(response => response.data)
+        .then(response => response.data)
+        .then(response => response.recipe);
+      setRecipesDetails(recipe);
     }
-  }
+  };
 
   const handleBackPage = () => {
-    setPage(page - 1)
-  }
+    setPage(page - 1);
+  };
 
   const handleNextPage = () => {
-    setPage(page + 1)
-  }
-
+    setPage(page + 1);
+  };
 
   const handleMouseOver = () => {
     setShowBookmarks(true);
-  }
+  };
 
   const handleMouseOut = () => {
     setShowBookmarks(false);
-  }
+  };
 
   const handleSaveBookmarks = (id: any) => {
-    const check = savedBookmarks.filter(recipe => recipe.id === id)
+    const check = savedBookmarks.filter(recipe => recipe.id === id);
     if (!_.isEmpty(check)) {
-      const newArr = [...savedBookmarks];
-      const checkNewArr = newArr.filter(recipe => recipe.id !== id)
-      if (_.isEmpty(checkNewArr)) {
+      const newArr = savedBookmarks.filter(recipe => recipe.id !== id);
+      setSavedBookmarks(newArr);
+      if (_.isEmpty(newArr)) {
         localStorage.setItem('mark', JSON.stringify([]));
       }
-      setSavedBookmaks(checkNewArr)
     } else {
-      setSavedBookmaks([...savedBookmarks, recipesDetails])
+      setSavedBookmarks([...savedBookmarks, recipesDetails]);
     }
-  }
+  };
 
   const handleLogoClick = () => {
     setAllRecipes([]);
@@ -101,7 +101,6 @@ function App() {
     setPage(1);
     setSearch('');
   };
-
 
   return (
     <div>
@@ -115,9 +114,8 @@ function App() {
                 <button className='search_btn' onClick={fetchRecipes}>
                   <img src={magnifier} alt='magnifier' /> Search</button>
               </div>
-
             </div>
-            <div className='bookmark_section' >
+            <div className='bookmark_section'>
               <div
                 className='bookmark'
                 onMouseOver={handleMouseOver}
@@ -126,7 +124,6 @@ function App() {
                 <img className='bookmark_img' src={bookmark} alt='bookmark' />
                 <button className='bookmark_btn'> BOOKMARKS </button>
               </div>
-
               {showBookmarks ?
                 <div
                   className='all_saved_bookmarks'
@@ -138,7 +135,7 @@ function App() {
                     :
                     <div className='recipe_item_list'>
                       <div className='list'>{savedBookmarks.map((recipe: any) =>
-                        <div onClick={() => fetchRecipesDetails(recipe.id)} className='item_list' >
+                        <div key={recipe.id} onClick={() => fetchRecipesDetails(recipe.id)} className='item_list'>
                           <div className='recipe_product_image'>
                             <img className='product_image' src={recipe.image_url} alt="Content" />
                           </div>
@@ -165,7 +162,7 @@ function App() {
                 <div className='recipe_item_list'>
                   <div className='list'>
                     {allRecipes.slice((page - 1) * itemsPerPage, page * itemsPerPage).map((recipe: any) =>
-                      <div onClick={() => fetchRecipesDetails(recipe.id)} className='item_list' key={recipe.id}>
+                      <div key={recipe.id} onClick={() => fetchRecipesDetails(recipe.id)} className='item_list'>
                         <div className='recipe_product_image'>
                           <img className='product_image' src={recipe.image_url} alt="Content" />
                         </div>
@@ -175,7 +172,6 @@ function App() {
                         </div>
                       </div>
                     )}
-
                   </div>
                   <div className='change_page_btn'>
                     {page > 1 ?
@@ -215,7 +211,7 @@ function App() {
                   <div onClick={() => handleSaveBookmarks(recipesDetails.id)} className='instructions_mark'>
                     <img
                       className='mark'
-                      src={savedBookmarks && savedBookmarks.some(bk => bk.id === recipesDetails.id) ? markSaved : mark}
+                      src={savedBookmarks.some(bk => bk.id === recipesDetails.id) ? markSaved : mark}
                       alt='instructions_mark'
                     />
                   </div>
@@ -243,10 +239,9 @@ function App() {
               </div>)}
           </div>
         </div>
-
       </div>
     </div>
-  );
+ 
+);
 }
-
-export default App;
+ export default App;

@@ -215,7 +215,7 @@ function App() {
                   <div onClick={() => handleSaveBookmarks(recipesDetails.id)} className='instructions_mark'>
                     <img
                       className='mark'
-                      src={_.isEmpty(savedBookmarks.filter(bk => bk.id === recipesDetails.id)) ? mark : markSaved}
+                      src={savedBookmarks && savedBookmarks.some(bk => bk.id === recipesDetails.id) ? markSaved : mark}
                       alt='instructions_mark'
                     />
                   </div>
